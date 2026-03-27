@@ -1,0 +1,43 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+cost_log.csv
+
+# ===== Public safe baseline =====
+
+# Secrets / credentials
+.env
+.env.*
+*.key
+*.pem
+*.pfx
+*.p12
+*.crt
+*.cer
+
+# Common secret/config files
+secrets.json
+secret.json
+config.local.json
+local.settings.json
+appsettings.Development.json
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# IDE / editor / OS
+.vscode/
+.idea/
+*.log
+Thumbs.db
+.DS_Store
+
+# Audit output
+_Audit_Report/
