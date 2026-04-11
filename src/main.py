@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 DAILY_LIMIT = 1.0
-MODEL = "gpt-5.4-nano"
+MODEL = "gpt-5.4"
+MAX_OUTPUT_TOKENS = 3000
 LOG_FILE = "cost_log.csv"
 
 INPUT_COST_PER_1M = 0.20
@@ -54,10 +55,12 @@ def estimate_cost(input_tokens, output_tokens):
 
 def main():
     if len(sys.argv) < 2:
-        print('Usage: python main.py "your prompt"')
+        print('Usage: python main.py "your prompt" [output_path]')
         return
 
-    prompt = " ".join(sys.argv[1:]).strip()
+    prompt = sys.argv[1].strip()
+    output_path = sys.argv[2] if len(sys.argv) > 2 else None
+
     if not prompt:
         print("Prompt cannot be empty.")
         return
@@ -74,10 +77,10 @@ def main():
     client = OpenAI(api_key=api_key)
 
     response = client.responses.create(
-    model=MODEL,
-    input=f"Be concise. {prompt}",
-    max_output_tokens=30,
-)
+        model=MODEL,
+        input=f"Be concise. {prompt}",
+        max_output_tokens=MAX_OUTPUT_TOKENS,
+    )
 
     usage = response.usage
     input_tokens = usage.input_tokens or 0
@@ -87,6 +90,17 @@ def main():
     log_cost(cost)
 
     print(response.output_text)
+
+    if output_path:
+        output_dir = os.path.dirname(output_path)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(response.output_text)
+
+        print(f"\nSaved to: {output_path}")
+
     print(f"\nInput tokens: {input_tokens}")
     print(f"Output tokens: {output_tokens}")
     print(f"Cost: ${cost:.6f}")
