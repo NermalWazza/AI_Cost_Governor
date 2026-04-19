@@ -53,3 +53,6 @@ runtime/
 .ai_sessions/
 *.session.json
 *.session.log
+.env
+config/.env.local
+audit/reports/
